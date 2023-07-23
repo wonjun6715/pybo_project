@@ -9,7 +9,7 @@ class Question(models.Model):
         return self.subject # 데이터 조회시 id가 아닌 제목을 표시
 
 class Answer(models.Model):
-    subject = models.ForeignKey(Question, on_delete=models.CASCADE) # Answer 모델은 질문에 대한 답변이므로 Question 모델을 속성으로 가져야함
+    question = models.ForeignKey(Question, on_delete=models.CASCADE) # Answer 모델은 질문에 대한 답변이므로 Question 모델을 속성으로 가져야함
     # 모델을 속성으로 가지면 ForeignKey 이용, CASCADE는 종속이라는 뜻, 질문이 삭제되면 답변도 삭제 되어야 함
     content = models.TextField()
-    create_date = models.DateTimeField
+    create_date = models.DateTimeField()
