@@ -5,6 +5,9 @@ class Question(models.Model):
     content = models.TextField() # 글자 수 제한이 없는 데이터
     create_date = models.DateTimeField() # 날짜, 시간 관련 속성은 DateTimeField 사용
 
+    def __str__(self):
+        return self.subject # 데이터 조회시 id가 아닌 제목을 표시
+
 class Answer(models.Model):
     subject = models.ForeignKey(Question, on_delete=models.CASCADE) # Answer 모델은 질문에 대한 답변이므로 Question 모델을 속성으로 가져야함
     # 모델을 속성으로 가지면 ForeignKey 이용, CASCADE는 종속이라는 뜻, 질문이 삭제되면 답변도 삭제 되어야 함
