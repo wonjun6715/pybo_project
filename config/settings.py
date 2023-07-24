@@ -55,7 +55,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], #현재 BASE_DIR은 c:/projects/mysite
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
