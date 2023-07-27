@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Question
+from django.utils import timezone
 
 def index(request):
     """
@@ -17,3 +18,14 @@ def detail(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     context = {'question': question}
     return render(request, 'pybo/question_detail.html', context)
+
+def answer_create(request, question_id): # request에는 question_detail.html에서 textarea에 입력된 데이터가 파이썬 객체에 담겨 넘어옴
+    # question_id는 id 값이 넘어옴
+    """
+    pybo 답변 등록
+    """
+    question = get_object_or_404(Question, pk=question_id)
+    question.answer_set.create(content=request.POST.get('content'), create_date=timezone.now())
+    # textarea에 입력된 데이터가 넘어온 값을 추출하기 위한 코드
+    # POST 형식으로 전송된 form 데이터 항목 중 name이 content인 값을 의미
+    return redirect('pybo:detail', question_id=question.id)
