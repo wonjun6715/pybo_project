@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Question
 from django.utils import timezone
+from .forms import QuestionForm, AnswerForm
 
 def index(request):
     """
@@ -25,7 +26,30 @@ def answer_create(request, question_id): # request에는 question_detail.html에
     pybo 답변 등록
     """
     question = get_object_or_404(Question, pk=question_id)
-    question.answer_set.create(content=request.POST.get('content'), create_date=timezone.now())
-    # textarea에 입력된 데이터가 넘어온 값을 추출하기 위한 코드
-    # POST 형식으로 전송된 form 데이터 항목 중 name이 content인 값을 의미
-    return redirect('pybo:detail', question_id=question.id)
+    if request.method == 'POST':
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.create_date = timezone.now()
+            answer.question = question
+            answer.save()
+            return redirect('pybo:detail', question_id=question.id)
+    else:
+        form = AnswerForm()
+    context = {'question' : question, 'form' : form}
+    return render(request, 'pybo/question_detail.html', context)
+def question_create(request):
+    """
+    pybo 질문 등록
+    """
+    if request.method == 'POST': # 질문 등록화면에서 입력값을 채우고 <저장하기> 버튼을 누르면 POST 방식으로 요청되어 데이터 저장
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False) # commit=False는 임시저장을 의미, 실제 데이터는 아직 저장되지 않은 상태
+            question.create_date = timezone.now()
+            question.save() # 실제 저장
+            return redirect('pybo:index')
+    else: # 질문 목록 화면에서 <질문 등록하기> 버튼을 누르면 GET 방식으로 요청되어 질문 등록화면이 나타남
+        form = QuestionForm() # request 메세지가 'GET'인 경우 호출
+    context = {'form' : form}
+    return render(request, 'pybo/question_form.html', context)
