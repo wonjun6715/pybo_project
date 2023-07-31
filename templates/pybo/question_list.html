@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load mathfilters %}
 {% block content %}
 <div class="container my-3">
     <table class="table">
@@ -31,15 +32,34 @@
     </table>
     <!-- 페이징 처리 시작 -->
     <ul class="pagination justify-content-center">
+        <!-- 처음 페이지 -->
+        {% if question_list.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ 1 }}">처음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">처음</a>
+        </li>
+        {% endif %}
         <!-- 이전 페이지 -->
         {% if question_list.has_previous %}
         <li class="page-item">
             <a class="page-link" href="?page={{ question_list.previous_page_number }}">이전</a>
         </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ question_list.number|add:-5 }}">5개 앞으로 이동</a>
+        </li>
         {% else %}
         <li class="page-item disabled">
             <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
         </li>
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">5개 앞으로 이동</a>
+        </li>
+
+
+
         {% endif %}
         <!-- 페이지 리스트 -->
         {% for page_number in question_list.paginator.page_range %}
@@ -57,12 +77,21 @@
         {% endfor %}
         <!-- 다음 페이지 -->
         {% if question_list.has_next %}
+         <li class="page-item">
+            <a class="page-link" href="?page={{ question_list.number|add:5 }}">5개 뒤로 이동</a>
+        </li>
         <li class="page-item">
             <a class="page-link" href="?page={{ question_list.next_page_number }}">다음</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ max_index }}">마지막</a>
         </li>
         {% else %}
         <li class="page-item disabled">
             <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">마지막</a>
         </li>
         {% endif %}
     </ul>
