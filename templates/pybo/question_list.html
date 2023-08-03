@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load mathfilters %}
+{% load pybo_filter %} <!-- load문은 extends문 다음에 위치해야 함 -->
 {% block content %}
 <div class="container my-3">
     <table class="table">
@@ -14,11 +14,17 @@
         {% if question_list %} <!-- question_list가 있다면-->
          {% for question in question_list %}<!--question_list를 반복하며 순차적으로 question에 대입 -->
         <tr>
-            <td>{{ forloop.counter }}</td>
+            <!-- 게시물 일련번호 공식 적용, 일련번호 = 전체 게시물 개수 - 시작 인덱스 - 현재 인덱스 + 1-->
+            <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
             <td>
                 <a href="{% url 'pybo:detail' question.id %}">
                     {{ question.subject }} <!--id와 subject 출력 -->
                 </a>
+                {% if question.answer_set.count > 0 %} <!-- 질문 답변 개수 -->
+                <span class="text-danger small ml-2">
+                    {{ question.answer_set.count }}
+                </span>
+                {% endif %}
             </td>
             <td>{{ question.create_date }}</td>
         </tr>
@@ -54,12 +60,9 @@
         <li class="page-item disabled">
             <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
         </li>
-        <li class="page-item disabled">
+        <li class = "page-item disabled">
             <a class="page-link" tabindex="-1" aria-disabled="true" href="#">5개 앞으로 이동</a>
         </li>
-
-
-
         {% endif %}
         <!-- 페이지 리스트 -->
         {% for page_number in question_list.paginator.page_range %}
