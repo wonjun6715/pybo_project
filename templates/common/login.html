@@ -13,6 +13,7 @@
     </div>
     <form method="post" class="post-form" action="{% url 'common:login' %}">
         {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}"> <!-- 로그아웃 상태에서 답변 등록시 로그인 창으로 넘어감 -->
         {% include "form_errors.html" %}
         <div class="form-group">
             <label for="username">사용자ID</label>

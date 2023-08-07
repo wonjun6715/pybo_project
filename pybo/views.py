@@ -3,6 +3,7 @@ from .models import Question
 from django.utils import timezone
 from .forms import QuestionForm, AnswerForm
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     """
@@ -35,6 +36,7 @@ def detail(request, question_id):
     context = {'question': question}
     return render(request, 'pybo/question_detail.html', context)
 
+@login_required(login_url='common:login') # 로그인이 되었는지를 우선 검사하여 1단계에서 본 오류를 방지
 def answer_create(request, question_id): # request에는 question_detail.html에서 textarea에 입력된 데이터가 파이썬 객체에 담겨 넘어옴
     # question_id는 id 값이 넘어옴
     """
@@ -45,6 +47,7 @@ def answer_create(request, question_id): # request에는 question_detail.html에
         form = AnswerForm(request.POST)
         if form.is_valid():
             answer = form.save(commit=False)
+            answer.author = request.user # 추가한 속성 author 적용
             answer.create_date = timezone.now()
             answer.question = question
             answer.save()
@@ -53,6 +56,8 @@ def answer_create(request, question_id): # request에는 question_detail.html에
         form = AnswerForm()
     context = {'question' : question, 'form' : form}
     return render(request, 'pybo/question_detail.html', context)
+
+@login_required(login_url='common:login')
 def question_create(request):
     """
     pybo 질문 등록
@@ -61,6 +66,7 @@ def question_create(request):
         form = QuestionForm(request.POST)
         if form.is_valid():
             question = form.save(commit=False) # commit=False는 임시저장을 의미, 실제 데이터는 아직 저장되지 않은 상태
+            question.author = request.user # 추가한 속성 author 적용
             question.create_date = timezone.now()
             question.save() # 실제 저장
             return redirect('pybo:index')
