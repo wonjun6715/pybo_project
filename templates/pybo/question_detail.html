@@ -50,7 +50,7 @@
     </h5>
 
     {% for answer in question.answer_set.all %}
-    <a id="answer_{{ answer.id }}"></a>
+    <a id="answer_{{ answer.id }}"></a> <!-- 앵커 기능 -->
     <div class="card my-3">
         <div class="card-body">
             <div class="card-text" style="while-space: pre-line;">

@@ -12,6 +12,7 @@ def answer_create(request, question_id): # request에는 question_detail.html에
     """
     pybo 답변 등록
     """
+
     question = get_object_or_404(Question, pk=question_id)
     if request.method == 'POST':
         form = AnswerForm(request.POST)
