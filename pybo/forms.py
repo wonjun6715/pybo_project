@@ -1,5 +1,5 @@
 from django import forms
-from pybo.models import Question, Answer
+from pybo.models import Question, Answer, Comment
 
 class QuestionForm(forms.ModelForm):  # 이 같은 클래스를 장고 폼이라고 함, ModeelFrom을 상속받았으므로 모델 폼이라고 부름
     # 모델 폼 객체를 저장하면 연결된 모델의 데이터를 저장할 수 있음
@@ -18,4 +18,11 @@ class AnswerForm(forms.ModelForm):
         fields = ['content']
         labels = {
             'content' : '답변내용',
+        }
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        labels = {
+            'content' : '댓글내용',
         }
