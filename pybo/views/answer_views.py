@@ -37,7 +37,8 @@ def answer_modify(request, answer_id):
     answer = get_object_or_404(Answer, pk=answer_id)
     if request.user != answer.author:
         messages.error(request, '수정권한이 없습니다')
-        return redirect('pybo:detail', question_id=answer.question.id)
+        return redirect('{}#answer_{}'.format(
+            resolve_url('pybo:detail', question_id=answer.question.id),answer.id))
 
     if request.method == 'POST':
         form = AnswerForm(request.POST, instance=answer)

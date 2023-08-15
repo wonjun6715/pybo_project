@@ -9,6 +9,7 @@ class Question(models.Model):
     modify_date = models.DateTimeField(null=True, blank=True) # 질문을 언제 수정했는지 확인, 질문 수정일시
     voter = models.ManyToManyField(User, related_name='voter_question') # 추천인 추가
     # 하나의 질문에 여러명이 추천할 수 있고, 한 명이 여러개의 질문에 추천할 수 있으므로 N:N 관계를 의미하는 ManyToManyField 사용
+    hater = models.ManyToManyField(User, related_name='hater_question') # 싫어요 기능 추가
 
 
     def __str__(self):
@@ -23,6 +24,7 @@ class Answer(models.Model):
     modify_date = models.DateTimeField(null=True, blank=True) # blank=True의 의미는 form.is_vaild()를 통한 입력 폼 데이터 검사시 값이 없어도 된다는 의미
                                                               # 답변 수정일시, 수정일시는 수정한 경우에만 생성되는 데이터이므로 조건 지정
     voter = models.ManyToManyField(User, related_name='voter_answer')
+    hater = models.ManyToManyField(User, related_name='hater_answer')
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE) # 댓글 글쓴이
