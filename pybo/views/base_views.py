@@ -15,8 +15,8 @@ def index(request):
     # 조회
     question_list = Question.objects.order_by('-create_date') # 데이터를 작성한 날짜의 역순(-)으로 조회하기 위해 order-by 함수 사용
     if kw:
-        # kw는 keyword를 의미, Q함수의 icontains는 kw가 각각의 내용에 포함되어있는지를 의미
-        question_list = question_list.filter(
+        # kw는 keyword를 의미, Q함수의 icontains(대소문자 구분 x)는 kw가 각각의 내용에 포함되어있는지를 의미
+        question_list = question_list.filter( # filter 함수에서 모델 필드에 접근하려면 __ 사용
             Q(subject__icontains=kw) | # 제목 검색
             Q(content__icontains=kw) | # 내용 검색
             Q(author__username__icontains=kw) | # 질문 글쓴이 검색
