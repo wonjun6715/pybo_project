@@ -2,7 +2,20 @@
 {% load pybo_filter %} <!-- load문은 extends문 다음에 위치해야 함 -->
 {% block content %}
 <div class="container my-3">
-    <div class="row justify-content-end my-3">
+    <div class="row justify-content-between my-3">
+        <div class="col-2">
+            <select class="form-control so">
+                <option value="recent" {% if so == 'recent' %}selected{% endif %}>
+                    최신순
+                </option>
+                <option value="recommend" {% if so == 'recommend' %}selected{% endif %}>
+                    추천순
+                </option>
+                <option value="popular" {% if so == 'popular' %}selected{% endif %}>
+                    인기순
+                </option>
+            </select>
+        </div>
         <div class="col-4 input-group">
             <input type="text" class="form-control kw"
                    value="{{ kw|default_if_none:'' }}">
@@ -121,6 +134,7 @@
 <form id="searchForm" method="get" action="{% url 'index' %}">
     <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
     <input type="hidden" id="page" name="page" value="{{ page }}">
+    <input type="hidden" id="so" name="so" value="{{ so }}">
 </form>
 {% endblock %}
 {% block script %}
@@ -135,6 +149,11 @@ $(document).ready(function(){
         $("#kw").val($(".kw").val());
         $("#page").val(1); // 검색 버튼을 클릭할 경우 1페이지부터 조회
         $("#searchForm").submit(); // searchForm의 page 필드에 그 값을 설정하여 폼을 요청
+    });
+    $(".so").on('change', function() { // class 속성이 so인 select의 갑시 변경되면 searchForm의 so 필드에 저장하여 searchForm을 요청
+        $("#so").val($(this).val());
+        $("#page").val(1);
+        $("#searchForm").submit();
     });
 });
 </script>

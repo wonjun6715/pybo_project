@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from ..models import Question
 
@@ -11,9 +11,20 @@ def index(request):
     # 입력 인자
     page = request.GET.get('page', '1') # 페이지, 맨처음 불러오는 페이지가 1
     kw = request.GET.get('kw', '') # 검색어
+    so = request.GET.get('so', 'recent') # 정렬 기준
+
+    # 정렬
+    if so == 'recommend':
+        question_list = Question.objects.annotate(
+            num_voter=Count('voter')).order_by('-num_voter', '-create_date') # 추천수가 같으면 최신순으로
+    elif so == 'popular':
+        question_list = Question.objects.annotate(
+            num_answer=Count('answer')).order_by('-num_answer', '-create_date') # 답변수가 같으면 최신순으로
+    else: # recent
+        question_list = Question.objects.order_by('-create_date')
 
     # 조회
-    question_list = Question.objects.order_by('-create_date') # 데이터를 작성한 날짜의 역순(-)으로 조회하기 위해 order-by 함수 사용
+
     if kw:
         # kw는 keyword를 의미, Q함수의 icontains(대소문자 구분 x)는 kw가 각각의 내용에 포함되어있는지를 의미
         question_list = question_list.filter( # filter 함수에서 모델 필드에 접근하려면 __ 사용
