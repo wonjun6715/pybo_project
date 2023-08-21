@@ -14,9 +14,12 @@ def index(request):
     so = request.GET.get('so', 'recent') # 정렬 기준
 
     # 정렬
-    if so == 'recommend':
+    if so == 'good': # 좋아요
         question_list = Question.objects.annotate(
-            num_voter=Count('voter')).order_by('-num_voter', '-create_date') # 추천수가 같으면 최신순으로
+            num_voter=Count('voter')).order_by('-num_voter', '-create_date') # 좋아요수가 같으면 최신순으로
+    elif so == 'hate': # 싫어요
+        question_list= Question.objects.annotate(
+            num_hater=Count('hater')).order_by('-num_hater', '-create_date') # 싫어요수가 같으면 최신순으로
     elif so == 'popular':
         question_list = Question.objects.annotate(
             num_answer=Count('answer')).order_by('-num_answer', '-create_date') # 답변수가 같으면 최신순으로

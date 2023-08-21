@@ -8,8 +8,11 @@
                 <option value="recent" {% if so == 'recent' %}selected{% endif %}>
                     최신순
                 </option>
-                <option value="recommend" {% if so == 'recommend' %}selected{% endif %}>
-                    추천순
+                <option value="good" {% if so == 'good' %}selected{% endif %}>
+                    좋아요순
+                </option>
+                <option value="hate" {% if so == 'hate' %}selected {% endif %}>
+                    싫어요순
                 </option>
                 <option value="popular" {% if so == 'popular' %}selected{% endif %}>
                     인기순
@@ -28,7 +31,8 @@
         <thead>
         <tr class="text-center thead-dark">
             <th>번호</th>
-            <th>추천</th>
+            <th>좋아요</th>
+            <th>싫어요</th>
             <th style="width:50%">제목</th>
             <th>글쓴이</th>
             <th>작성일시</th>
@@ -42,8 +46,14 @@
             <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
             <td>
                 {% if question.voter.all.count > 0 %}
-                <span class="badge badge-light">
+                <span class="badge badge-secondary">
                     {{ question.voter.all.count }}
+                </span>
+                {% endif %}
+            </td>
+            <td>{% if question.hater.all.count > 0 %}
+                <span class="badge badge-danger">
+                    {{ question.hater.all.count }}
                 </span>
                 {% endif %}
             </td>
